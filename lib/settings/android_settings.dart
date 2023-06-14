@@ -39,6 +39,9 @@ class AndroidNotificationSettings {
 
 class AndroidSettings extends LocatorSettings {
   final AndroidNotificationSettings androidNotificationSettings;
+
+  /// Time for living service in background in minutes. Only applies in Android. Default is 60 minutes.
+  /// Set to -1 to keep service alive without timeout.
   final int wakeLockTime;
   final int interval;
   final LocationClient client;
@@ -51,7 +54,8 @@ class AndroidSettings extends LocatorSettings {
   ///
   /// [androidNotificationSettings] Specific setting for android notification.
   ///
-  /// [wakeLockTime] Time for living service in background in minutes. Only applies in android. Default is 60 minute.
+  /// [wakeLockTime] Time for living service in background in minutes. Only applies in Android. Default is 60 minutes.
+  /// Set to -1 to keep service alive without timeout.
   const AndroidSettings(
       {LocationAccuracy accuracy = LocationAccuracy.NAVIGATION,
       this.interval = 5,
