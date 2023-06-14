@@ -88,7 +88,11 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_TAG).apply {
                 setReferenceCounted(false)
-                acquire(wakeLockTime)
+                if (wakeLockTime != -1) {
+                    acquire(wakeLockTime)
+                } else {
+                    acquire()
+                }
             }
         }
 
@@ -193,7 +197,14 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         icon = resources.getIdentifier(iconName, "mipmap", packageName)
         notificationIconColor =
             intent.getLongExtra(Keys.SETTINGS_ANDROID_NOTIFICATION_ICON_COLOR, 0).toInt()
-        wakeLockTime = intent.getIntExtra(Keys.SETTINGS_ANDROID_WAKE_LOCK_TIME, 60) * 60 * 1000L
+            var minutes = intent.getIntExtra(Keys.SETTINGS_ANDROID_WAKE_LOCK_TIME, 60)
+        // if minutes is -1 return -1 other wise convert to milliseconds
+        wakeLockTime = if (minutes == -1) {
+            -1
+        } else {
+            minutes * 60 * 1000L
+        }
+        
 
         locatorClient = context?.let { getLocationClient(it) }
         locatorClient?.requestLocationUpdates(getLocationRequest(intent))
